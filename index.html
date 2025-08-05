@@ -73,10 +73,10 @@
         /* Анимированный фон за курсором */
         .cursor-bg {
             position: fixed;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 50%, transparent 80%);
-            border-radius: 50%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 50%, transparent 90%);
+            border-radius: 80%;
             pointer-events: none;
             z-index: 1;
             transition: all 0.3s ease;
@@ -94,7 +94,7 @@
         }
         
         .cursor-bg.active {
-            opacity: 1;
+            opacity: 100;
         }
         
 
@@ -133,12 +133,12 @@
         
         @keyframes glow {
             0%, 100% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.3); }
-            50% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.4); }
+            70% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.4); }
         }
         
         /* Улучшенная анимация свечения для светлой темы */
         [data-theme="light"] .glow {
-            animation: glowLight 2s ease-in-out infinite;
+            animation: glowLight 3s ease-in-out infinite;
         }
         
         @keyframes glowLight {
@@ -158,7 +158,7 @@
         }
         
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(90px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
@@ -299,6 +299,9 @@
             background: var(--gradient-secondary);
             position: relative;
             overflow: hidden;
+            transition: transform 0.5s ease-out;
+            transform-style: preserve-3d;
+            will-change: transform; 
         }
         
         .auth-container::before {
@@ -323,6 +326,9 @@
             text-align: center;
             position: relative;
             backdrop-filter: blur(20px);
+            transition: transform 0.5s ease-out;
+            transform-style: preserve-3d;
+            will-change: transform; 
         }
         
         /* Улучшенные стили для карточки авторизации в светлой теме */
@@ -405,6 +411,9 @@
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
             margin-bottom: 40px;
+            transition: transform 0.5s ease-out;
+            transform-style: preserve-3d;
+            will-change: transform; 
         }
         
         .menu-item {
@@ -473,6 +482,7 @@
         .menu-item:hover i {
             animation: rotate 1s ease-in-out;
             transform: scale(1.2);
+            filter: drop-shadow(0 0 10px rgba(255, 200, 0, 0.7));
         }
         
         .menu-item h3 {
@@ -484,6 +494,8 @@
         .menu-item p {
             color: var(--text-secondary);
             font-size: 14px;
+            transform-style: preserve-3d;
+            will-change: transform; \
         }
         
         /* Project Cards */
@@ -493,12 +505,13 @@
             padding: 30px;
             margin-bottom: 30px;
             border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
+            transition: transform 0.5s ease-out;
             position: relative;
             overflow: hidden;
             animation: slideUp 0.8s ease-out;
             backdrop-filter: blur(15px);
             box-shadow: var(--glass-shadow);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         
         /* Улучшенные стили для карточек проектов в светлой теме */
@@ -518,7 +531,7 @@
             transform: translateY(-3px) scale(1.02);
             box-shadow: var(--shadow-hover);
             border-color: var(--accent-color);
-            animation: glow 2s ease-in-out infinite;
+            animation: glow 3s ease-in-out infinite;
             background: var(--card-hover);
         }
         
@@ -595,7 +608,7 @@
             background: var(--gradient-primary);
             border-radius: 4px;
             transition: width 0.3s ease;
-            animation: glow 2s ease-in-out infinite;
+            animation: glow 3s ease-in-out infinite;
         }
         
         /* Улучшенные стили для прогресс-бара в светлой теме */
@@ -995,7 +1008,6 @@
     <div id="auth-container" class="auth-container">
         <div class="auth-card fade-in">
             <div class="logo" style="margin-bottom: 30px;">
-                <i class="fas fa-heart"></i>
                 <span>БлагоTvor</span>
             </div>
             <h2>Добро пожаловать</h2>
@@ -1029,7 +1041,6 @@
         <header>
             <div class="header-content">
                 <div class="logo">
-                    <i class="fas fa-heart"></i>
                     <span>БлагоTvor</span>
                 </div>
                 <div class="user-info">
@@ -1164,8 +1175,6 @@
     </div>
 
     <script>
-        // Конфигурация API (замените на ваш URL Replit)
-        const API_URL = 'https://Blagotvor.sripror0507.repl.co';
         const TELEGRAM_BOT_USERNAME = 'blagotvor_bot'; // Замените на username вашего бота
         
         // Хранилище данных
@@ -1228,7 +1237,7 @@
         function demoLogin() {
             const demoUser = {
                 id: Math.floor(Math.random() * 1000),
-                name: "Демо Пользователь",
+                name: "Демо Вход",
                 username: "demo_user",
                 photo_url: null,
                 auth_date: Date.now()
@@ -1245,7 +1254,7 @@
             
             showApp();
             updateUserInfo();
-            loadDemoProjects();
+            loadProjects();
         }
         
         // Функция выхода
@@ -1253,7 +1262,7 @@
             currentUser = null;
             localStorage.removeItem('currentUser');
             hideApp();
-            showMessage('Вы успешно вышли из системы', 'success');
+            showMessage('Вы вышли из системы', 'success');
         }
         
         // Проверка статуса авторизации
@@ -1310,42 +1319,7 @@
         // Загрузка демо-проектов
         function loadDemoProjects() {
             projects = [
-                {
-                    id: 1,
-                    name: "Помощь детскому дому",
-                    goal: 100000,
-                    collected: 75000,
-                    description: "Сбор средств на ремонт крыши в детском доме №3. Проект направлен на создание безопасных условий для проживания детей.",
-                    deadline: "15.12.2024",
-                    creator: "Иван Петров",
-                    creatorId: 1,
-                    category: "Дети",
-                    location: "Москва"
-                },
-                {
-                    id: 2,
-                    name: "Корм для бездомных животных",
-                    goal: 50000,
-                    collected: 32000,
-                    description: "Закупка корма для приюта 'Лапа помощи'. Поможем накормить более 100 животных.",
-                    deadline: "30.11.2024",
-                    creator: "Анна Сидорова",
-                    creatorId: 2,
-                    category: "Животные",
-                    location: "Санкт-Петербург"
-                },
-                {
-                    id: 3,
-                    name: "Медицинская помощь",
-                    goal: 200000,
-                    collected: 180000,
-                    description: "Сбор средств на операцию для ребенка с врожденным пороком сердца.",
-                    deadline: "20.12.2024",
-                    creator: "Мария Козлова",
-                    creatorId: 3,
-                    category: "Медицина",
-                    location: "Казань"
-                }
+               
             ];
             
             // Загружаем сохранённые данные
@@ -1361,18 +1335,42 @@
         }
         
         // Загрузка проектов с сервера
-        async function loadProjects() {
-            try {
-                const response = await fetch(`${API_URL}/api/projects`);
-                const data = await response.json();
-                projects = data.projects || [];
-                renderProjects();
-            } catch (error) {
-                console.error('Ошибка загрузки проектов:', error);
-                showMessage('Не удалось загрузить проекты', 'error');
-                loadDemoProjects();
-            }
-        }
+       async function loadProjects() {
+  try {
+    // Загрузка из локального JSON-файла
+    const response = await fetch('database.json');
+    
+    if (!response.ok) {
+      throw new Error('Не удалось загрузить проекты');
+    }
+    
+    const data = await response.json();
+    projects = data.projects || [];
+    
+    // Сохраняем в localStorage как резервную копию
+    localStorage.setItem('projects', JSON.stringify(projects));
+    
+    // Если нет проектов, загружаем демо-данные
+    if (projects.length === 0) {
+      loadDemoProjects();
+      showMessage('Используются демо-данные', 'warning');
+    } else {
+      showMessage('Проекты успешно загружены', 'success');
+    }
+  } catch (error) {
+    console.error('Ошибка загрузки:', error);
+    
+    // Пробуем загрузить из localStorage
+    const savedProjects = localStorage.getItem('projects');
+    if (savedProjects) {
+      projects = JSON.parse(savedProjects);
+      showMessage('Загружены локальные данные', 'warning');
+    } else {
+      loadDemoProjects();
+      showMessage('Используются демо-данные', 'warning');
+    }
+  }
+}
         
         // Показать все проекты
         function showProjects() {
@@ -1542,13 +1540,6 @@
                         </div>
                     </div>
                     
-                    <div class="project-actions">
-                        <button class="btn btn-primary">
-                            <i class="fas fa-heart"></i>
-                            Поддержать проект
-                        </button>
-                        ${buttonsHTML}
-                    </div>
                 </div>
             `;
             
@@ -1714,20 +1705,20 @@
                 const text = title.textContent;
                 title.textContent = '';
                 title.style.overflow = 'hidden';
-                title.style.borderRight = '2px solid var(--accent-color)';
+                title.style.borderRight = '4px solid var(--accent-color)';
                 
                 let i = 0;
                 const typeWriter = () => {
                     if (i < text.length) {
                         title.textContent += text.charAt(i);
                         i++;
-                        setTimeout(typeWriter, 50);
+                        setTimeout(typeWriter, 70);
                     } else {
                         title.style.borderRight = 'none';
                     }
                 };
                 
-                setTimeout(typeWriter, index * 200);
+                setTimeout(typeWriter, index * 700);
             });
         }
         
@@ -1750,7 +1741,7 @@
             const buttons = document.querySelectorAll('.btn');
             buttons.forEach(btn => {
                 btn.addEventListener('mouseenter', function() {
-                    this.style.transform = 'scale(1.05) translateY(-2px)';
+                    this.style.transform = 'scale(1.05) translateY(-3px)';
                 });
                 
                 btn.addEventListener('mouseleave', function() {
@@ -1758,7 +1749,7 @@
                 });
                 
                 btn.addEventListener('click', function() {
-                    this.style.animation = 'bounce 0.6s ease-in-out';
+                    this.style.animation = 'bounce 0.8s ease-in-out';
                     setTimeout(() => {
                         this.style.animation = '';
                     }, 600);
@@ -1800,19 +1791,19 @@
                 message.style.opacity = '1';
             }, 100);
             
-            // Автоматически удаляем через 3 секунды
+            // Автоматически удаляем через 2 секунды
             setTimeout(() => {
                 if (message.parentNode) {
                     closeMessage(message.querySelector('.message-close'));
                 }
-            }, 3000);
+            }, 2000);
         }
         
         // Функция закрытия уведомления
         function closeMessage(closeButton) {
             const message = closeButton.closest('.message');
             if (message) {
-                message.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                message.style.transform = 'translate(-50%, -50%) scale(2)';
                 message.style.opacity = '0';
                 setTimeout(() => {
                     if (message.parentNode) {
@@ -1900,15 +1891,15 @@
                 const clickEffect = document.createElement('div');
                 clickEffect.style.cssText = `
                     position: fixed;
-                    width: 50px;
-                    height: 50px;
+                    width: 60px;
+                    height: 60px;
                     background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
                     border-radius: 50%;
                     pointer-events: none;
                     z-index: 1000;
-                    left: ${e.clientX - 25}px;
-                    top: ${e.clientY - 25}px;
-                    animation: scaleIn 0.3s ease-out forwards;
+                    left: ${e.clientX - 35}px;
+                    top: ${e.clientY - 35}px;
+                    animation: scaleIn 0.5s ease-out forwards;
                 `;
                 
                 document.body.appendChild(clickEffect);
@@ -1947,15 +1938,45 @@
         
         function updateThemeButton() {
             const themeIcon = document.getElementById('theme-icon');
-            const themeText = document.getElementById('theme-text');
             
             if (currentTheme === 'light') {
                 themeIcon.className = 'fas fa-sun';
-                themeText.textContent = 'Светлая';
             } else {
                 themeIcon.className = 'fas fa-moon';
-                themeText.textContent = 'Тёмная';
             }
+        }
+document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.project-card, .menu-item');
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const cardCenterX = rect.left + rect.width / 2;
+                const cardCenterY = rect.top + rect.height / 2;
+                
+                // Расстояние от курсора до центра карточки
+                const distanceX = (e.clientX - cardCenterX) / 20; // 20 - регулирует силу эффекта
+                const distanceY = (e.clientY - cardCenterY) / 20;
+                
+              card.style.transform = `
+                    translate(${distanceX * -2}px, ${distanceY * -2}px)
+                    perspective(500px)
+                `;
+            });
+        });
+
+        // Возвращаем карточки на место при уходе курсора
+        document.addEventListener('mouseleave', () => {
+            const cards = document.querySelectorAll('.project-card, .menu-item');
+            cards.forEach(card => {
+                card.style.transform = 'none';
+            });
+        });
+        
+        // Отключаем эффект на мобильных устройствах
+        if (window.matchMedia('(max-width: 768px)').matches) {
+            document.removeEventListener('mousemove', handleParallax);
         }
     </script>
 </body>
