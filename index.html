@@ -20,7 +20,7 @@
             --hover-bg: #262c36;
             --error-bg: #490202;
             --error-text: #f85149;
-            --ball-size: 20px;
+            --ball-size: 300px;
         }
 
         [data-theme="light"] {
@@ -168,24 +168,7 @@
             }
         }
         
-        /* Шарик, следующий за курсором */
-        .cursor-ball {
-            position: fixed;
-            width: var(--ball-size);
-            height: var(--ball-size);
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(106,17,203,0.8) 0%, rgba(37,117,252,0.8) 100%);
-            pointer-events: none;
-            z-index: 9999;
-            transition: transform 0.1s ease-out, width 0.3s, height 0.3s;
-            transform: translate(-50%, -50%);
-        }
-        
-        .cursor-ball.hover {
-            width: calc(var(--ball-size) * 2);
-            height: calc(var(--ball-size) * 2);
-        }
-        
+        /* Шарик на фоне чата */
         .chat-container {
             width: 100%;
             max-width: 100%;
@@ -199,6 +182,22 @@
             animation: fadeIn 0.7s ease-in-out;
             backdrop-filter: blur(10px);
             border: 1px solid var(--border-color);
+            position: relative;
+        }
+        
+        .background-ball {
+            position: absolute;
+            width: var(--ball-size);
+            height: var(--ball-size);
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(106,17,203,0.3) 0%, rgba(37,117,252,0.1) 100%);
+            filter: blur(40px);
+            pointer-events: none;
+            z-index: 1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: transform 0.5s ease-out;
         }
         
         @keyframes fadeIn {
@@ -214,6 +213,8 @@
             align-items: center;
             border-bottom: 1px solid var(--border-color);
             animation: slideDown 0.5s ease-out;
+            position: relative;
+            z-index: 2;
         }
         
         @keyframes slideDown {
@@ -278,7 +279,9 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            background: var(--bg-secondary);
+            background: transparent;
+            position: relative;
+            z-index: 2;
         }
         
         .message {
@@ -367,6 +370,8 @@
             align-items: center;
             border-top: 1px solid var(--border-color);
             animation: slideUp 0.5s ease-out;
+            position: relative;
+            z-index: 2;
         }
         
         @keyframes slideUp {
@@ -459,6 +464,7 @@
             font-size: 12px;
             opacity: 0.7;
             transition: opacity 0.2s, color 0.2s;
+            z-index: 3;
         }
         
         .clear-history:hover {
@@ -528,10 +534,10 @@
         <span></span>
     </div>
     
-    <!-- Шарик, следующий за курсором -->
-    <div class="cursor-ball" id="cursorBall"></div>
-    
-    <div class="chat-container">
+    <div class="chat-container" id="chatContainer">
+        <!-- Шарик на фоне чата -->
+        <div class="background-ball" id="backgroundBall"></div>
+        
         <div class="chat-header">
             <div class="bot-info">
                 <div class="bot-avatar">M</div>
@@ -564,7 +570,8 @@
             const sendButton = document.getElementById('sendButton');
             const themeToggle = document.getElementById('themeToggle');
             const clearHistoryBtn = document.getElementById('clearHistory');
-            const cursorBall = document.getElementById('cursorBall');
+            const chatContainer = document.getElementById('chatContainer');
+            const backgroundBall = document.getElementById('backgroundBall');
             
             // API Token - замените на свой
             const CHUTES_API_TOKEN = "cpk_95a34985697c48e18b4d15afdb7433de.9d53560d744755e48885754ebab98286.JV7Ntv4MevW0zgieUO4QIBb1FL6s1vFm";
@@ -592,22 +599,41 @@ You're tech-savvy and up-to-date with the latest trends.`;
                 renderMessageHistory();
             }
             
-            // Шарик, следующий за курсором
-            document.addEventListener('mousemove', (e) => {
-                cursorBall.style.left = `${e.clientX}px`;
-                cursorBall.style.top = `${e.clientY}px`;
+            // Движение шарика от центра к курсору
+            chatContainer.addEventListener('mousemove', (e) => {
+                const rect = chatContainer.getBoundingClientRect();
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Рассчитываем позицию курсора относительно чата
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                // Рассчитываем направление от центра к курсору
+                const deltaX = mouseX - centerX;
+                const deltaY = mouseY - centerY;
+                
+                // Ограничиваем движение шарика (не более 30% от центра к краю)
+                const maxDistance = Math.min(rect.width, rect.height) * 0.3;
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                
+                let ballX, ballY;
+                if (distance <= maxDistance) {
+                    ballX = centerX + deltaX * 0.3; // Двигаем шарик только на 30% пути к курсору
+                    ballY = centerY + deltaY * 0.3;
+                } else {
+                    // Если курсор далеко, ограничиваем движение шарика
+                    const ratio = maxDistance / distance;
+                    ballX = centerX + deltaX * ratio * 0.3;
+                    ballY = centerY + deltaY * ratio * 0.3;
+                }
+                
+                backgroundBall.style.transform = `translate(${ballX - rect.width/2}px, ${ballY - rect.height/2}px)`;
             });
             
-            // Эффект увеличения шарика при наведении на интерактивные элементы
-            const interactiveElements = document.querySelectorAll('button, a, input, .message');
-            interactiveElements.forEach(element => {
-                element.addEventListener('mouseenter', () => {
-                    cursorBall.classList.add('hover');
-                });
-                
-                element.addEventListener('mouseleave', () => {
-                    cursorBall.classList.remove('hover');
-                });
+            // Возвращаем шарик в центр, когда курсор покидает чат
+            chatContainer.addEventListener('mouseleave', () => {
+                backgroundBall.style.transform = `translate(-50%, -50%)`;
             });
             
             // Функция для обновления иконки темы
@@ -625,37 +651,24 @@ You're tech-savvy and up-to-date with the latest trends.`;
                 updateThemeIcon(newTheme);
             });
             
-            // Очистка истории
+            // Очистка истории - удаляем все сообщения
             clearHistoryBtn.addEventListener('click', function() {
                 if (confirm('Are you sure you want to clear the chat history?')) {
                     messageHistory = [];
                     localStorage.removeItem('mobiusChatHistory');
                     
-                    // Оставляем только приветственное сообщение
+                    // Полностью очищаем чат
                     chatMessages.innerHTML = `
                         <button class="clear-history" id="clearHistory">Clear History</button>
-                        <div class="welcome-message">
-                            <h3>Hello! I'm Mobius</h3>
-                            <p>Your cool AI assistant. How can I help you today?</p>
-                        </div>
                     `;
                     
                     // Повесим обработчик на новую кнопку
                     document.getElementById('clearHistory').addEventListener('click', arguments.callee);
-                    
-                    // Добавим класс для анимации появления элементов
-                    chatMessages.classList.add('stagger-animation');
                 }
             });
             
             // Функция для отображения истории сообщений
             function renderMessageHistory() {
-                // Удаляем приветственное сообщение
-                const welcomeMessage = chatMessages.querySelector('.welcome-message');
-                if (welcomeMessage) {
-                    welcomeMessage.remove();
-                }
-                
                 // Отображаем сообщения из истории
                 messageHistory.forEach((msg, index) => {
                     if (msg.role !== 'system') {  // Не отображаем системные сообщения
