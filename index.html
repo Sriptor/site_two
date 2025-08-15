@@ -3,7 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobius AI Assistant</title>
+    <title>Mobius AI</title>
+    <!-- Подключение Highlight.js для подсветки кода -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai-sublime.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <!-- Подключение языков для подсветки -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/html.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/typescript.min.js"></script>
+    
     <style>
         :root {
             /* Темная тема */
@@ -21,6 +31,8 @@
             --error-bg: #490202;
             --error-text: #f85149;
             --ball-size: 300px;
+            --code-bg: #23241f;
+            --code-border: #3a3a3a;
         }
 
         [data-theme="light"] {
@@ -38,6 +50,8 @@
             --hover-bg: #e6e6e6;
             --error-bg: #ffebee;
             --error-text: #d32f2f;
+            --code-bg: #f5f5f5;
+            --code-border: #e0e0e0;
         }
 
         * {
@@ -201,7 +215,7 @@
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(40px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
@@ -238,7 +252,7 @@
             align-items: center;
             font-weight: bold;
             font-size: 18px;
-            animation: pulse 2s infinite;
+            animation: pulse 3s infinite;
         }
         
         @keyframes pulse {
@@ -323,6 +337,67 @@
         @keyframes botSlideIn {
             from { opacity: 0; transform: translateX(-20px); }
             to { opacity: 1; transform: translateX(0); }
+        }
+        
+        /* Стили для кода в стиле Sublime Text */
+        .code-block {
+            margin: 10px 0;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--code-border);
+            background-color: var(--code-bg);
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--code-border);
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .code-lang {
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .copy-button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            transition: background-color 0.2s;
+        }
+        
+        .copy-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        pre {
+            margin: 0;
+            padding: 12px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+        
+        .inline-code {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
         }
         
         .typing-indicator {
@@ -517,6 +592,24 @@
         .stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
         .stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
         .stagger-animation > *:nth-child(5) { animation-delay: 0.5s; }
+        
+        /* Кнопка для вставки кода */
+        .code-button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        
+        .code-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
@@ -546,11 +639,11 @@
                     <div class="bot-status">Online</div>
                 </div>
             </div>
+            <button class="clear-history" id="clearHistory">Clear History</button>
             <button class="theme-toggle" id="themeToggle">🌙</button>
         </div>
         
         <div class="chat-messages" id="chatMessages">
-            <button class="clear-history" id="clearHistory">Clear History</button>
             <div class="welcome-message">
                 <h3>Hello! I'm Mobius</h3>
                 <p>Your cool AI assistant. How can I help you today?</p>
@@ -559,6 +652,7 @@
         
         <div class="chat-input-container">
             <input type="text" class="chat-input" id="chatInput" placeholder="Type your message here...">
+            <button class="code-button" id="codeButton" title="Insert code">{code}</button>
             <button class="send-button" id="sendButton">➤</button>
         </div>
     </div>
@@ -572,6 +666,7 @@
             const clearHistoryBtn = document.getElementById('clearHistory');
             const chatContainer = document.getElementById('chatContainer');
             const backgroundBall = document.getElementById('backgroundBall');
+            const codeButton = document.getElementById('codeButton');
             
             // API Token - замените на свой
             const CHUTES_API_TOKEN = "cpk_95a34985697c48e18b4d15afdb7433de.9d53560d744755e48885754ebab98286.JV7Ntv4MevW0zgieUO4QIBb1FL6s1vFm";
@@ -676,7 +771,10 @@ You're tech-savvy and up-to-date with the latest trends.`;
                             const messageElement = document.createElement('div');
                             messageElement.classList.add('message');
                             messageElement.classList.add(msg.role === 'user' ? 'user-message' : 'bot-message');
-                            messageElement.textContent = msg.content;
+                            
+                            // Обрабатываем код в сообщении
+                            processCodeInMessage(messageElement, msg.content);
+                            
                             chatMessages.appendChild(messageElement);
                             
                             // Прокручиваем чат вниз
@@ -684,6 +782,81 @@ You're tech-savvy and up-to-date with the latest trends.`;
                         }, index * 100); // Задержка для каждого сообщения
                     }
                 });
+            }
+            
+            // Функция для обработки кода в сообщении
+            function processCodeInMessage(element, content) {
+                // Проверяем наличие блока кода ```
+                const codeBlockRegex = /```([a-zA-Z0-9+-]*)?\n([\s\S]*?)```/g;
+                let match;
+                let lastIndex = 0;
+                let resultHTML = '';
+                
+                while ((match = codeBlockRegex.exec(content)) !== null) {
+                    // Добавляем текст до блока кода
+                    resultHTML += escapeHtml(content.substring(lastIndex, match.index));
+                    
+                    // Извлекаем язык и код
+                    const language = match[1] || '';
+                    const code = match[2];
+                    
+                    // Создаем блок кода
+                    const codeId = 'code-' + Math.random().toString(36).substr(2, 9);
+                    resultHTML += `
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-lang">${language || 'code'}</span>
+                                <button class="copy-button" data-code-id="${codeId}">Copy</button>
+                            </div>
+                            <pre><code id="${codeId}" class="${language}">${escapeHtml(code)}</code></pre>
+                        </div>
+                    `;
+                    
+                    lastIndex = match.index + match[0].length;
+                }
+                
+                // Добавляем оставшийся текст после последнего блока кода
+                resultHTML += escapeHtml(content.substring(lastIndex));
+                
+                // Обрабатываем inline-код `code`
+                resultHTML = resultHTML.replace(/`([^`]+)`/g, '<span class="inline-code">$1</span>');
+                
+                element.innerHTML = resultHTML;
+                
+                // Применяем подсветку синтаксиса ко всем блокам кода
+                element.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightElement(block);
+                });
+                
+                // Добавляем обработчики для кнопок копирования
+                element.querySelectorAll('.copy-button').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const codeId = this.getAttribute('data-code-id');
+                        const codeElement = document.getElementById(codeId);
+                        if (codeElement) {
+                            // Копируем код в буфер обмена
+                            navigator.clipboard.writeText(codeElement.textContent).then(() => {
+                                // Меняем текст кнопки на "Copied!"
+                                const originalText = this.textContent;
+                                this.textContent = 'Copied!';
+                                
+                                // Возвращаем исходный текст через 2 секунды
+                                setTimeout(() => {
+                                    this.textContent = originalText;
+                                }, 2000);
+                            }).catch(err => {
+                                console.error('Failed to copy: ', err);
+                            });
+                        }
+                    });
+                });
+            }
+            
+            // Функция для экранирования HTML
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
             }
             
             // Функция для добавления сообщения в чат и историю
@@ -702,7 +875,8 @@ You're tech-savvy and up-to-date with the latest trends.`;
                 localStorage.setItem('mobiusChatHistory', JSON.stringify(messageHistory));
                 
                 if (isUser) {
-                    messageElement.textContent = content;
+                    // Обрабатываем код в сообщении пользователя
+                    processCodeInMessage(messageElement, content);
                     chatMessages.appendChild(messageElement);
                 } else {
                     // Для сообщений бота используем эффект печати
@@ -716,25 +890,34 @@ You're tech-savvy and up-to-date with the latest trends.`;
             
             // Функция для эффекта печати сообщения по словам
             function typeMessage(element, text) {
-                const words = text.split(' ');
-                let currentText = '';
+                // Проверяем, содержит ли сообщение блоки кода
+                const hasCodeBlocks = text.includes('```');
                 
-                // Начинаем с первого слова
-                if (words.length > 0) {
-                    currentText = words[0];
-                    element.textContent = currentText;
+                if (hasCodeBlocks) {
+                    // Если есть блоки кода, обрабатываем их и отображаем без эффекта печати
+                    processCodeInMessage(element, text);
+                } else {
+                    // Если нет блоков кода, используем эффект печати по словам
+                    const words = text.split(' ');
+                    let currentText = '';
                     
-                    // Добавляем остальные слова с задержкой
-                    let index = 1;
-                    const typingInterval = setInterval(() => {
-                        if (index < words.length) {
-                            currentText += ' ' + words[index];
-                            element.textContent = currentText;
-                            index++;
-                        } else {
-                            clearInterval(typingInterval);
-                        }
-                    }, 100); // Задержка между словами в миллисекундах
+                    // Начинаем с первого слова
+                    if (words.length > 0) {
+                        currentText = words[0];
+                        element.textContent = currentText;
+                        
+                        // Добавляем остальные слова с задержкой
+                        let index = 1;
+                        const typingInterval = setInterval(() => {
+                            if (index < words.length) {
+                                currentText += ' ' + words[index];
+                                element.textContent = currentText;
+                                index++;
+                            } else {
+                                clearInterval(typingInterval);
+                            }
+                        }, 100); // Задержка между словами в миллисекундах
+                    }
                 }
             }
             
@@ -876,6 +1059,23 @@ You're tech-savvy and up-to-date with the latest trends.`;
                 if (e.key === 'Enter') {
                     sendMessage();
                 }
+            });
+            
+            // Обработчик кнопки для вставки кода
+            codeButton.addEventListener('click', function() {
+                const cursorPosition = chatInput.selectionStart;
+                const textBefore = chatInput.value.substring(0, cursorPosition);
+                const textAfter = chatInput.value.substring(cursorPosition);
+                
+                // Вставляем шаблон для кода
+                chatInput.value = textBefore + "```\n\n```" + textAfter;
+                
+                // Устанавливаем курсор между ```
+                chatInput.selectionStart = cursorPosition + 4;
+                chatInput.selectionEnd = cursorPosition + 4;
+                
+                // Фокус на поле ввода
+                chatInput.focus();
             });
         });
     </script>
