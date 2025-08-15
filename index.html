@@ -215,7 +215,7 @@
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(40px); }
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
@@ -252,7 +252,7 @@
             align-items: center;
             font-weight: bold;
             font-size: 18px;
-            animation: pulse 3s infinite;
+            animation: pulse 2s infinite;
         }
         
         @keyframes pulse {
@@ -633,17 +633,17 @@
         
         <div class="chat-header">
             <div class="bot-info">
-                <div class="bot-avatar">M</div>
+                <div class="bot-avatar">MO</div>
                 <div>
-                    <h2>Mobius AI Assistant</h2>
+                    <h2>Mobius AI</h2>
                     <div class="bot-status">Online</div>
                 </div>
             </div>
-            <button class="clear-history" id="clearHistory">Clear History</button>
             <button class="theme-toggle" id="themeToggle">🌙</button>
         </div>
         
         <div class="chat-messages" id="chatMessages">
+            <button class="clear-history" id="clearHistory">Clear History</button>
             <div class="welcome-message">
                 <h3>Hello! I'm Mobius</h3>
                 <p>Your cool AI assistant. How can I help you today?</p>
@@ -652,7 +652,7 @@
         
         <div class="chat-input-container">
             <input type="text" class="chat-input" id="chatInput" placeholder="Type your message here...">
-            <button class="code-button" id="codeButton" title="Insert code">{code}</button>
+            <button class="code-button" id="codeButton" title="Insert code">{'<'}</button>
             <button class="send-button" id="sendButton">➤</button>
         </div>
     </div>
