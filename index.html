@@ -13,12 +13,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/css.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/html.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/typescript.min.js"></script>
+    <!-- Иконки -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
             /* Темная тема */
             --primary: #6a11cb;
             --secondary: #2575fc;
+            --accent: #00c6ff;
             --bg-primary: #0a0e1a;
             --bg-secondary: #0f1729;
             --bg-tertiary: #1a2332;
@@ -30,15 +33,20 @@
             --hover-bg: #262c36;
             --error-bg: #490202;
             --error-text: #f85149;
+            --success-bg: #043d35;
+            --success-text: #3dd68c;
             --ball-size: 300px;
             --code-bg: #23241f;
             --code-border: #3a3a3a;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
         }
 
         [data-theme="light"] {
             /* Светлая тема */
             --primary: #6a11cb;
             --secondary: #2575fc;
+            --accent: #0084ff;
             --bg-primary: #f5f7fa;
             --bg-secondary: #ffffff;
             --bg-tertiary: #f0f2f5;
@@ -50,8 +58,12 @@
             --hover-bg: #e6e6e6;
             --error-bg: #ffebee;
             --error-text: #d32f2f;
+            --success-bg: #e6f7ee;
+            --success-text: #2e7d32;
             --code-bg: #f5f5f5;
             --code-border: #e0e0e0;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
         }
 
         * {
@@ -59,7 +71,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: background-color 0.3s, color 0.3s;
+            transition: background-color 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s;
         }
         
         body {
@@ -189,7 +201,7 @@
             height: 90vh;
             background: var(--bg-secondary);
             border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -253,6 +265,7 @@
             font-weight: bold;
             font-size: 18px;
             animation: pulse 2s infinite;
+            box-shadow: 0 0 10px rgba(106, 17, 203, 0.5);
         }
         
         @keyframes pulse {
@@ -270,6 +283,17 @@
             font-size: 12px;
             color: var(--text-secondary);
             margin-top: 3px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #3dd68c;
+            animation: pulse 2s infinite;
         }
         
         .theme-toggle {
@@ -279,10 +303,17 @@
             font-size: 20px;
             cursor: pointer;
             transition: transform 0.3s, color 0.3s;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
         }
         
         .theme-toggle:hover {
-            transform: rotate(30deg) scale(1.2);
+            transform: rotate(30deg) scale(1.1);
+            background-color: var(--hover-bg);
             color: var(--primary);
         }
         
@@ -299,13 +330,14 @@
         }
         
         .message {
-            max-width: 80%;
+            max-width: 85%;
             padding: 12px 16px;
             border-radius: 18px;
             position: relative;
-            line-height: 1.4;
+            line-height: 1.5;
             animation: slideIn 0.4s ease-out;
             word-wrap: break-word;
+            box-shadow: var(--card-shadow);
         }
         
         @keyframes slideIn {
@@ -346,6 +378,7 @@
             overflow: hidden;
             border: 1px solid var(--code-border);
             background-color: var(--code-bg);
+            box-shadow: var(--card-shadow);
         }
         
         .code-header {
@@ -373,6 +406,9 @@
             padding: 2px 6px;
             border-radius: 3px;
             transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
         
         .copy-button:hover {
@@ -410,6 +446,7 @@
             width: fit-content;
             margin-bottom: 15px;
             animation: slideIn 0.3s ease-out;
+            box-shadow: var(--card-shadow);
         }
         
         .typing-dot {
@@ -532,18 +569,22 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            background: none;
+            background: var(--bg-tertiary);
             border: none;
             color: var(--text-secondary);
             cursor: pointer;
             font-size: 12px;
-            opacity: 0.7;
-            transition: opacity 0.2s, color 0.2s;
+            padding: 6px 12px;
+            border-radius: 15px;
+            transition: opacity 0.2s, color 0.2s, background 0.2s;
             z-index: 3;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         
         .clear-history:hover {
-            opacity: 1;
+            background: var(--hover-bg);
             color: var(--error-text);
         }
         
@@ -610,9 +651,139 @@
             background-color: rgba(255, 255, 255, 0.1);
             transform: scale(1.1);
         }
+        
+        /* Анимация загрузки */
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid rgba(106, 17, 203, 0.2);
+            border-bottom-color: var(--primary);
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loader-text {
+            margin-top: 20px;
+            color: var(--text-primary);
+            font-size: 16px;
+            animation: pulseText 2s infinite;
+        }
+        
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        /* Улучшенные кнопки */
+        .action-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: var(--bg-tertiary);
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        .action-button:hover {
+            background: var(--hover-bg);
+            transform: translateY(-2px);
+        }
+        
+        /* Сообщение о статусе */
+        .status-message {
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .status-success {
+            background: var(--success-bg);
+            color: var(--success-text);
+        }
+        
+        /* Улучшенный индикатор печати */
+        .typing-indicator {
+            position: relative;
+        }
+        
+        .typing-indicator::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: 15px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid var(--message-bg);
+        }
+        
+        /* Анимация для кнопки отправки */
+        .send-button i {
+            transition: transform 0.3s;
+        }
+        
+        .send-button:hover i {
+            transform: translateX(2px);
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .chat-container {
+                height: 100vh;
+                border-radius: 0;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+            
+            .chat-input-container {
+                padding: 10px;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Анимация загрузки -->
+    <div class="loader-container" id="loader">
+        <div class="loader"></div>
+        <div class="loader-text">Loading Mobius AI...</div>
+    </div>
+    
     <!-- Анимированный фон -->
     <div class="bg-animation">
         <span></span>
@@ -636,14 +807,22 @@
                 <div class="bot-avatar">MO</div>
                 <div>
                     <h2>Mobius AI</h2>
-                    <div class="bot-status">Online</div>
+                    <div class="bot-status">
+                        <div class="status-dot"></div>
+                        <span>Online</span>
+                    </div>
                 </div>
             </div>
-            <button class="theme-toggle" id="themeToggle">🌙</button>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
         </div>
         
         <div class="chat-messages" id="chatMessages">
-            <button class="clear-history" id="clearHistory">Clear History</button>
+            <button class="clear-history" id="clearHistory">
+                <i class="fas fa-trash-alt"></i>
+                Clear History
+            </button>
             <div class="welcome-message">
                 <h3>Hello! I'm Mobius</h3>
                 <p>Your cool AI assistant. How can I help you today?</p>
@@ -652,8 +831,12 @@
         
         <div class="chat-input-container">
             <input type="text" class="chat-input" id="chatInput" placeholder="Type your message here...">
-            <button class="code-button" id="codeButton" title="Insert code">{'<'}</button>
-            <button class="send-button" id="sendButton">➤</button>
+            <button class="code-button" id="codeButton" title="Insert code">
+                <i class="fas fa-code"></i>
+            </button>
+            <button class="send-button" id="sendButton">
+                <i class="fas fa-paper-plane"></i>
+            </button>
         </div>
     </div>
 
@@ -667,6 +850,7 @@
             const chatContainer = document.getElementById('chatContainer');
             const backgroundBall = document.getElementById('backgroundBall');
             const codeButton = document.getElementById('codeButton');
+            const loader = document.getElementById('loader');
             
             // API Token - замените на свой
             const CHUTES_API_TOKEN = "cpk_95a34985697c48e18b4d15afdb7433de.9d53560d744755e48885754ebab98286.JV7Ntv4MevW0zgieUO4QIBb1FL6s1vFm";
@@ -689,10 +873,16 @@ You're tech-savvy and up-to-date with the latest trends.`;
             document.documentElement.setAttribute('data-theme', savedTheme);
             updateThemeIcon(savedTheme);
             
-            // Отображение сохраненной истории
-            if (messageHistory.length > 0) {
-                renderMessageHistory();
-            }
+            // Скрываем загрузчик через 1.5 секунды (имитация загрузки)
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                loader.style.visibility = 'hidden';
+                
+                // Отображение сохраненной истории
+                if (messageHistory.length > 0) {
+                    renderMessageHistory();
+                }
+            }, 1500);
             
             // Движение шарика от центра к курсору
             chatContainer.addEventListener('mousemove', (e) => {
@@ -733,7 +923,14 @@ You're tech-savvy and up-to-date with the latest trends.`;
             
             // Функция для обновления иконки темы
             function updateThemeIcon(theme) {
-                themeToggle.textContent = theme === 'dark' ? '🌙' : '☀️';
+                const icon = themeToggle.querySelector('i');
+                if (theme === 'dark') {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                } else {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                }
             }
             
             // Переключение темы
@@ -744,6 +941,12 @@ You're tech-savvy and up-to-date with the latest trends.`;
                 document.documentElement.setAttribute('data-theme', newTheme);
                 localStorage.setItem('mobiusTheme', newTheme);
                 updateThemeIcon(newTheme);
+                
+                // Анимация кнопки
+                themeToggle.style.transform = 'rotate(360deg)';
+                setTimeout(() => {
+                    themeToggle.style.transform = 'rotate(0)';
+                }, 300);
             });
             
             // Очистка истории - удаляем все сообщения
@@ -754,11 +957,26 @@ You're tech-savvy and up-to-date with the latest trends.`;
                     
                     // Полностью очищаем чат
                     chatMessages.innerHTML = `
-                        <button class="clear-history" id="clearHistory">Clear History</button>
+                        <button class="clear-history" id="clearHistory">
+                            <i class="fas fa-trash-alt"></i>
+                            Clear History
+                        </button>
+                        <div class="status-message status-success">
+                            <i class="fas fa-check-circle"></i>
+                            Chat history cleared successfully
+                        </div>
                     `;
                     
                     // Повесим обработчик на новую кнопку
                     document.getElementById('clearHistory').addEventListener('click', arguments.callee);
+                    
+                    // Через 3 секунды убираем сообщение о статусе
+                    setTimeout(() => {
+                        const statusMessage = document.querySelector('.status-message');
+                        if (statusMessage) {
+                            statusMessage.remove();
+                        }
+                    }, 3000);
                 }
             });
             
@@ -806,7 +1024,10 @@ You're tech-savvy and up-to-date with the latest trends.`;
                         <div class="code-block">
                             <div class="code-header">
                                 <span class="code-lang">${language || 'code'}</span>
-                                <button class="copy-button" data-code-id="${codeId}">Copy</button>
+                                <button class="copy-button" data-code-id="${codeId}">
+                                    <i class="far fa-copy"></i>
+                                    Copy
+                                </button>
                             </div>
                             <pre><code id="${codeId}" class="${language}">${escapeHtml(code)}</code></pre>
                         </div>
@@ -837,12 +1058,13 @@ You're tech-savvy and up-to-date with the latest trends.`;
                             // Копируем код в буфер обмена
                             navigator.clipboard.writeText(codeElement.textContent).then(() => {
                                 // Меняем текст кнопки на "Copied!"
-                                const originalText = this.textContent;
-                                this.textContent = 'Copied!';
+                                const icon = this.querySelector('i');
+                                const originalText = this.innerHTML;
+                                this.innerHTML = '<i class="fas fa-check"></i> Copied!';
                                 
                                 // Возвращаем исходный текст через 2 секунды
                                 setTimeout(() => {
-                                    this.textContent = originalText;
+                                    this.innerHTML = originalText;
                                 }, 2000);
                             }).catch(err => {
                                 console.error('Failed to copy: ', err);
@@ -916,7 +1138,7 @@ You're tech-savvy and up-to-date with the latest trends.`;
                             } else {
                                 clearInterval(typingInterval);
                             }
-                        }, 100); // Задержка между словами в миллисекундах
+                        }, 50); // Уменьшил задержку для более плавного эффекта
                     }
                 }
             }
@@ -949,7 +1171,7 @@ You're tech-savvy and up-to-date with the latest trends.`;
             function showError(message) {
                 const errorElement = document.createElement('div');
                 errorElement.classList.add('error-message');
-                errorElement.textContent = message;
+                errorElement.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
                 chatMessages.appendChild(errorElement);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
                 
@@ -957,6 +1179,20 @@ You're tech-savvy and up-to-date with the latest trends.`;
                 setTimeout(() => {
                     errorElement.remove();
                 }, 5000);
+            }
+            
+            // Функция для отображения успешного статуса
+            function showSuccess(message) {
+                const successElement = document.createElement('div');
+                successElement.classList.add('status-message', 'status-success');
+                successElement.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+                chatMessages.appendChild(successElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // Удаляем сообщение через 3 секунды
+                setTimeout(() => {
+                    successElement.remove();
+                }, 3000);
             }
             
             // Функция для отправки сообщения в API Chutes
@@ -1032,6 +1268,9 @@ You're tech-savvy and up-to-date with the latest trends.`;
                 // Показываем индикатор печати
                 showTypingIndicator();
                 
+                // Анимация кнопки отправки
+                sendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                
                 try {
                     // Отправляем запрос к API
                     const response = await sendMessageToAPI(message);
@@ -1039,14 +1278,20 @@ You're tech-savvy and up-to-date with the latest trends.`;
                     // Скрываем индикатор печати
                     hideTypingIndicator();
                     
+                    // Возвращаем обычную иконку
+                    sendButton.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                    
                     // Добавляем ответ бота
                     addMessage(response);
                 } catch (error) {
                     // Скрываем индикатор печати
                     hideTypingIndicator();
                     
+                    // Возвращаем обычную иконку
+                    sendButton.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                    
                     // Показываем ошибку
-                    showError("Error: Failed to get response from AI. Please try again later.");
+                    showError("Failed to get response from AI. Please try again later.");
                     console.error(error);
                 }
             }
@@ -1076,7 +1321,16 @@ You're tech-savvy and up-to-date with the latest trends.`;
                 
                 // Фокус на поле ввода
                 chatInput.focus();
+                
+                // Анимация кнопки
+                codeButton.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    codeButton.style.transform = 'scale(1)';
+                }, 300);
             });
+            
+            // Фокус на поле ввода при загрузке
+            chatInput.focus();
         });
     </script>
 </body>
